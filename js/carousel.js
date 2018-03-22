@@ -1,17 +1,17 @@
 
-class Carousel { 
+class Carousel {
  /**
   * @param {HTMLelement}
-  * @param {objet}options   
+  * @param {objet}options
   * @param {objet}options.slidesToScroll - nbr de slides à faire défiler
   * @param {objet}options.slideVisible - nbr d'éléments visibles dans un slide
   */
-    
+
     constructor(element, options = {}){
         this.element = element
         this.options = Object.assign({}, {
             slidesToScroll: 1,
-            slidesVisible: 1 
+            slidesVisible: 1
         }, options)
         // this.children = [].slice.call(element.children)
         this.children = [...element.children]
@@ -21,8 +21,14 @@ class Carousel {
         let container = this.createDivWithClass('carousel-container')
         // container.style.width = (ratio * 100) + "%"
         console.log(root, container)
-        this.element.appendChild(root)
+        element.appendChild(root)
         root.appendChild(container)
+        this.children.forEach((child)=>{
+          let item = document.createElement('div')
+          item.classList.add('container-item')
+          item.appendChild(child)
+          container.appendChild(item)
+        })
         // !: si on utilise un fonction preES6, this n'est plus la classe mais l'élément
     }
         /**
@@ -42,4 +48,3 @@ document.addEventListener('DOMContentLoaded', function(){
         slidesVisible: 3
     })
 })
-
