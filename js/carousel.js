@@ -16,14 +16,18 @@ class Carousel {
         this.options = Object.assign({}, {
             slidesToScroll: 1,
             slidesVisible: 1,
-            loop:false
+            loop:true
         }, options)
         // this.children = [].slice.call(element.children)
         let enfants = [...element.children]
         this.isMobile = false
         this.currentItem = 0
         this.root = this.createDivWithClass('carousel')
+       
+        //modif du DOM
         this.container = this.createDivWithClass('carousel-container')
+        this.root.setAttribute('tabindex', '0')
+            // permet l'utilisation de la tablature pour
         this.element.appendChild(this.root)
         this.root.appendChild(this.container)
         this.moveCallbacks = []
@@ -39,6 +43,14 @@ class Carousel {
         this.moveCallbacks.forEach(cb =>cb(0))
         this.onWindowResize()
         window.addEventListener('resize', this.onWindowResize.bind(this))
+        this.root.addEventListener('keyup', (e) =>{
+            // ke deuxieme est la pour edge qui ne comprends par ArrowRight/ArrowLeft
+            if(e.key === 'ArrowRight' || e.key === 'Right'){
+                this.next()
+            }else if(e.key ==='ArrowLeft' || e.key === 'Left'){
+                this.prev()
+            }
+        })
         // !: si on utilise un fonction preES6, this n'est plus la classe mais l'élément
     }
         /**
@@ -93,16 +105,30 @@ class Carousel {
             this.goToItem(this.currentItem + this.slidesToScroll)
         }
         goToItem(index){
-           if(index < 0){
-               index = this.items.length - this.options.slidesToScroll
-           }else if(index >= this.items.length || this.items[this.currentItem + this.options.slidesVisible] === undefined && index > this.currentItem){
-               index = 0
-           }
+        //     debugger
+            console.log(index)
+           if(index < 0 && this.currentItem === 0){
+               if(this.options.loop){
+                index = this.items.length - this.slidesVisible
+               }else{
+                   return
+               }
+            } else if(index >= this.items.length || (this.items[this.currentItem + this.slidesVisible] === undefined && index > this.currentItem)){
+                        if(this.options.loop){
+                            index = 0
+                        }else{
+                            return
+                        } 
+                    } else if(index < 0 && this.currentItem > 0 ){
+                    index = 0
+                }            
+                    
             let translateX = index * (-100 / this.items.length)
             this.container.style.transform = 'translate3d('+translateX +'%,0,0)'
             this.currentItem = index
             this.moveCallbacks.forEach(cb =>cb(index))
            }
+        
 
         /**
          * @param {moveCallback} cb
