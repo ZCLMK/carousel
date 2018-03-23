@@ -1,5 +1,8 @@
 body{
-  background-color:rgb(98, 190, 98);
+  background-color:rgb(8, 51, 131);
+}
+*{
+  box-sizing: border-box;
 }
 
 img{
@@ -12,6 +15,7 @@ img{
   height: 500px; 
   margin: 10px 10px;
   border-radius: 15px;
+  box-shadow: 3px 3px 10px rgb(16, 17, 16)
 
 }
 .item__image{
@@ -34,20 +38,50 @@ img{
 .carousel{
   position:relative;
 }
-/* .carousel-container::after{
-  
-} */
-
+ 
 .carousel-container::after{
 display: table;
 clear: both;
 content:'';
 }
-.carousel{
-  overflow-x: hidden;
+
+.carousel-container{
+  /* comportement par défaut des transitions  */
+  transition: transform 0.3s;
+  /* sert à exempter mon translate 3d du comportement par défaut */
+  transform: translate3d(0,0,0);
 }
 
 .carousel-item{
   float:left;
 }
 
+.carousel-next, .carousel-prev{
+  
+  position: absolute;
+  width: 60px; 
+  height: 60px; 
+  color:black;
+  background: #FFF url(../img/next.svg) center center no-repeat;
+  background-size: 35px 35px;
+  border-radius: 50%;
+  top:50%;
+  margin-top: -20px;
+  right: -20px;
+  box-shadow: 3px 3px 10px rgb(43.8%, 47.6%, 44.1%);
+  transition: transform 0.5s;
+}
+.carousel-next:hover , .carousel-prev:hover{
+  transform: scale(1.2);
+}
+.carousel-prev{
+  left:-20px;
+  right:auto;
+  background-image: url(../img/back.svg);
+}
+.prevButton-hidden{
+  opacity:0;
+}
+.nextButton-hidden{
+  opacity:0;
+}
