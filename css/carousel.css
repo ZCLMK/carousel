@@ -29,7 +29,7 @@ img{
 .item__body{
   height:15%;
   width:inherit;
-  font-size: 1.2em;
+  font-size: 1em;
   text-align: center;
   padding: 10px;
   background-color:white;
@@ -37,6 +37,7 @@ img{
 
 .carousel{
   position:relative;
+  display:inline-block;
 }
  
 .carousel-container::after{
@@ -46,6 +47,7 @@ content:'';
 }
 
 .carousel-container{
+  margin-bottom: 3%;
   /* comportement par défaut des transitions  */
   transition: transform 0.3s;
   /* sert à exempter mon translate 3d du comportement par défaut */
@@ -85,3 +87,36 @@ content:'';
 .nextButton-hidden{
   opacity:0;
 }
+.carousel-pagination{
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  text-align: center;
+  display: none;
+}
+.carousel-pagination-button{
+background-color: #fff;
+width:10px;
+height:10px;
+border-radius: 50%;
+display: inline-block;
+margin:0 3px;
+box-shadow: 3px 5px 10px rgb(43.8%, 47.6%, 44.1%);
+transition: transform .3s;
+cursor:pointer;
+}
+
+.carousel-pagination-button-active,  .carousel-pagination-button:hover {
+  transform: scale(1.4);
+}
+
+  #carousel1 .item {
+    height:415px;
+  }
+
+  @media screen and (min-width:800px){
+    .carousel-pagination{
+      display:block;
+    }
+  }

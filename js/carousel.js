@@ -6,7 +6,8 @@ class Carousel {
   * @param {objet}[options.slidesToScroll=1] - nbr de slides à faire défiler
   * @param {objet}[options.slideVisible=1] - nbr d'éléments visibles dans un slide
   * @param {boolean}[options.loop = false] - faut-il boucler à la fin du carousel? 
-  * 
+  * @param {boolean}[options.pagination = false] 
+  *@param {boolean}[options.navigation = true]   
   * @callback moveCallback
   *     @param {number} index
   */
@@ -16,7 +17,9 @@ class Carousel {
         this.options = Object.assign({}, {
             slidesToScroll: 1,
             slidesVisible: 1,
-            loop:true
+            loop:true,
+            pagination:false,
+            navigation:true
         }, options)
         // this.children = [].slice.call(element.children)
         let enfants = [...element.children]
@@ -39,7 +42,12 @@ class Carousel {
           return item 
         })
         this.setStyle()
-        this.createNavigation()
+        if(this.options.navigation === true){
+            this.createNavigation()
+        }
+        this.createPagination()
+       
+       // Evenements
         this.moveCallbacks.forEach(cb =>cb(0))
         this.onWindowResize()
         window.addEventListener('resize', this.onWindowResize.bind(this))
@@ -71,6 +79,8 @@ class Carousel {
             this.items.forEach(item =>  item.style.width = (100/this.slidesVisible)/ratio + "%")
         }
 
+      
+
         createNavigation(){
             let nextButton = this.createDivWithClass('carousel-next')
             let prevButton = this.createDivWithClass('carousel-prev')
@@ -97,6 +107,28 @@ class Carousel {
             })
         }
 
+        /** 
+ * createPagination
+ * @function Créer la pagination 
+ */
+        createPagination(){
+            let pagination = this.createDivWithClass('carousel-pagination')
+            let buttons = []
+            this.root.appendChild(pagination)
+            for(let i = 0; i < this.items.length; i = i + this.options.slidesToScroll){
+                let button = this.createDivWithClass('carousel-pagination-button')
+                button.addEventListener('click', ()=>this.goToItem(i))
+                pagination.appendChild(button)
+                buttons.push(button)
+            }
+            this.onMove(index => {
+                let activeButton = buttons[Math.floor(index/this.options.slidesToScroll)]
+             if(activeButton){
+                 buttons.forEach(button =>button.classList.remove('carousel-pagination-button-active'))
+                activeButton.classList.add('carousel-pagination-button-active')
+                }
+            })
+        }
         prev(){
             this.goToItem(this.currentItem - this.slidesToScroll)
         }
@@ -158,19 +190,23 @@ class Carousel {
            }
         }
     
-
-document.addEventListener('DOMContentLoaded', function(){
-
-    new Carousel(document.querySelector('#carousel1'), {
-        slidesVisible: 3,
-        slidesToScroll:3,
-        loop:true,
-        isMobile:true
-    })
-    new Carousel(document.querySelector('#carousel2'),{
-        slidesToScroll:2,
-        slidesVisible:2
-    })
-    new Carousel(document.querySelector('#carousel3'))
-    
-})
+let onReady = function(){
+        new Carousel(document.querySelector('#carousel1'), {
+            slidesVisible: 3,
+            slidesToScroll:3,
+            loop:true,
+            isMobile:true
+        })
+        new Carousel(document.querySelector('#carousel2'),{
+            slidesToScroll:2,
+            slidesVisible:2,
+            loop:true,
+            pagination:true
+        })
+        new Carousel(document.querySelector('#carousel3'))
+}
+// permet de gérer le chargment asynchrone du script, car il peut ne jamais être exécuté
+if(document.readyState !== "loading"){
+    onReady()
+}
+document.addEventListener('DOMContentLoaded', onReady) 
